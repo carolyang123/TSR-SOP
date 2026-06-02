@@ -128,20 +128,19 @@
 
 
 <script>
+  const API_URL = "https://script.google.com/macros/s/AKfycbzMlbLonfEGcrpJcB6EflgVDAvIGhBrnGJDarcQbtgFLa3-3901GWPObToPkec605WCCQ/exec";
+let ALL_DATA = {};
+
+// 網頁啟動時，先抓資料
+fetch(API_URL)
+  .then(res => res.json())
+  .then(data => { ALL_DATA = data; });
   const CATEGORY_OS_MAPPING = {
     'HW_FC': ['WS', 'RHEL', 'SUSE', 'VM'],
     'HW_LAN': ['WS', 'RHEL', 'SUSE', 'VM'],
     'HW_SAS': ['WS', 'RHEL', 'SUSE', 'VM'],
     'HW_SAS RAID': ['WS', 'RHEL', 'SUSE', 'VM'],
   };
-
-
-
-
-
-
-
-
   const OS_CONFIG = {
     'WS': { name: 'Windows', icon: 'https://img.icons8.com/color/96/windows-10.png' },
     'RHEL': { name: 'RHEL', icon: 'https://img.icons8.com/color/96/red-hat.png' },
@@ -246,15 +245,12 @@
       title.innerText = category + ' SOP';
       container.innerHTML = '<div class="text-center p-5"><div class="spinner-border text-primary"></div></div>';
      
-      google.script.run
-        .withSuccessHandler(data => renderSopCards(data, category)) // 這裡改成 category
-        .getSheetData('FUNCTION');
+      renderSopCards(ALL_DATA['FUNCTION'], category);
     }
     else {
-      // --- 這是原本的 TEST PLAN 邏輯，完全沒動 ---
-      title.innerText = category + ' SOP';
-      loadSopData(category);
-    }
+    title.innerText = category + ' SOP';
+    renderSopCards(ALL_DATA[category], category); // ✅ 改成這樣，直接從 ALL_DATA 抓資料
+}
   }
 
 
@@ -275,31 +271,15 @@
           btn.type = "button";
           btn.className = "btn btn-sop-custom btn-sm w-100";
           btn.innerText = btnText;
-          btn.onclick = function() { loadSopData(btnText); };
+          btn.onclick = function() { 
+    document.getElementById('current-category').innerText = btnText + " Test SOP";
+    renderSopCards(ALL_DATA[btnText], btnText); // ✅ 直接呼叫 renderSopCards
+};
           container.appendChild(btn);
         });
       }
     });
   }
-
-
-
-
-
-
-
-
-  function loadSopData(sheetName) {
-    document.getElementById('current-category').innerText = sheetName + " Test SOP";
-    document.getElementById('table-output').innerHTML = '<p class="p-5 text-center">Fetching SOP data...</p>';
-    google.script.run.withSuccessHandler(renderSopCards).getSheetData(sheetName);
-  }
-
-
-
-
-
-
 
 
   function formatGo2test(text) {
@@ -552,11 +532,12 @@ function showPdfInNewLayer(url, title, parentCategory, showBackBtn = true) {
         </div>`;
 
 
-    container.innerHTML = `
+    // 修改 showPdfInNewLayer 內的這段：
+container.innerHTML = `
     <div class="p-3">
         ${headerHtml}
         <div id="preview-container" style="height: 75vh;">
-            <iframe id="pdf-viewer" src="${url.replace('/view', '/preview')}"
+            <iframe id="pdf-viewer" src="${url}" 
                     style="width: 100%; height: 100%; border:2px solid #dee2e6; border-radius: 8px;"></iframe>
         </div>
     </div>`;
