@@ -1,0 +1,5 @@
+.sop-card { background-color: #ffffff; border: 1px solid #e9ecef; border-radius: 8px; padding: 15px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+.sop-title-bar { background-color: #e7f1fb; border: 1px solid #e1e4e8; border-radius: 8px; padding: 12px 20px; font-weight: 700; color: #373736; margin-bottom: 10px; }
+.col-box { background: #f8f9fa; border: 1px solid #eaecf0; border-radius: 4px; padding: 10px; height: 100%; }
+.inner-label { color: #333; font-weight: bold; display: block; margin-bottom: 4px; }
+.pdf-link { color: #d63384; text-decoration: underline; font-weight: bold; cursor: pointer; }
