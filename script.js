@@ -22,7 +22,7 @@ function linkify(text) {
     const pattern = /([^\s\[\]]+)(\[(.*?) PDF\])/g;
     return text.toString().replace(pattern, function(match, url, fullTag, pdfName) {
         // 這裡我們修改為連結到你的 PDF 目錄
-        return `<a href="PDF file/${pdfName}.pdf" target="_blank" class="pdf-link">${pdfName} PDF</a>`;
+        return `<a href="PDF/${pdfName}.pdf" target="_blank" class="pdf-link">${pdfName} PDF</a>`;
     });
 }
 
