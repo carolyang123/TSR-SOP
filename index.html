@@ -6,24 +6,77 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  
+ 
   <style>
     body { margin: 0; padding: 0; background-color: #f0f2f5; font-family: 'Segoe UI', system-ui, sans-serif; overflow: hidden; display: flex; height: 100vh; }
-    #sidebar { width: 190px; background: #23282d; color: #c3c4c7; flex-shrink: 0; display: flex; flex-direction: column; overflow-y: auto; z-index: 1000; }
-    .sidebar-header { width: 100%; background: #191e23; padding: 15px 20px; font-size: 20px; font-weight: 700; color: white; border-bottom: 1px solid #3c434a; cursor: pointer; }
+    #sidebar { width: 190px; background: #23282d; color: #c3c4c7; flex-shrink: 0; display: flex; flex-direction: column; overflow-y: auto; }
+    .sidebar-header { width: 100%; background: #191e23; padding: 15px 20px; font-size: 20px; font-weight: 700; color: white; border-bottom: 1px solid #3c434a; cursor: pointer; box-sizing: border-box; }
     .nav-group { padding: 20px 20px 5px; color: #c8c5c5; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
     .nav-item { padding: 7px 20px; cursor: pointer; display: flex; align-items: center; transition: 0.2s; font-size: 14px; border-left: 4px solid transparent; }
+    .nav-item i { width: 20px; margin-right: 10px; text-align: center; }
     .nav-item:hover { background-color: #191e23; color: #72aee6; }
     .nav-item.active { background-color: #72aee6 !important; color: white !important; font-weight: 600; }
-    #main-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    #main-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: #f0f2f5; }
     #main-content { flex: 1; overflow-y: auto; padding: 25px 40px; }
-    .accordion-item { border: none; margin-bottom: 12px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-    .accordion-button { padding: 12px 20px; font-weight: 700; color: #373736; border-radius: 8px !important; }
-    .sub-step-card { background: #fff; border: 1px solid #e9ecef; border-radius: 6px; padding: 15px; margin-bottom: 15px; }
-    .btn-sop-custom { background-color: #e7f3ff; color: #0056b3; border: 1px solid #cce5ff; border-radius: 8px; font-weight: 600; padding: 8px 15px; }
+   
+    .accordion-item { border: none !important; margin-bottom: 12px; border-radius: 8px !important; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .accordion-button { padding: 12px 20px !important; font-weight: 700; color: #373736 !important; border: 1px solid #e1e4e8; border-radius: 8px !important; }
+    .accordion-button:focus { box-shadow: none !important; }
+    .accordion-button:hover { background-color: #f0f7ff !important; color: #3498db !important; }
+    .accordion-button::before { content: '+'; margin-right: 15px; font-weight: bold; color: #999; }
+    .accordion-button:not(.collapsed) { background-color: #e7f1fb !important; border-radius: 8px 8px 0 0 !important; }
+    .accordion-button:not(.collapsed)::before { content: '−'; color: #373736; }
+    .pdf-full-wrapper {
+      position: relative;
+      width: calc(100% + 80px); /* 撐開寬度 */
+      height: 90vh;
+      margin-left: -40px;      /* 抵銷左側 padding */
+      margin-top: -25px;       /* 抵銷上方 padding */
+      z-index: 1;              /* 確保它不會蓋住側邊欄 */
+  }
+ 
+  /* 確保側邊欄始終在最上層 */
+  #sidebar {
+      z-index: 1000;
+  }
+    /* 子項目步驟精緻小卡片 */
+    .sub-step-card { background-color: #ffffff; border: 1px solid #e9ecef; border-radius: 6px; padding: 15px; margin-bottom: 15px; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
+   
+    /* 子步驟標題橫條區塊 */
+    .sub-step-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #373736 !important;
+      background-color: #e7f1fb !important;
+      padding: 12px 20px;
+      border: 1px solid #e1e4e8;
+      border-radius: 8px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+    }
+   
+    .inner-label { font-size: 13px; font-weight: 700; color: #1a1a1a; display: block; margin-bottom: 6px; }
+    .sop-content-text { font-size: 13px; color: #444; line-height: 1.6; white-space: pre-wrap; }
+   
+    .os-select-container { width: 100%; display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: flex-start; gap: 30px; padding: 50px 20px; }
+    .os-column { display: flex; flex-direction: column; align-items: center; width: 160px; }
+    .os-icon-area { margin-bottom: 15px; text-align: center; cursor: default; pointer-events: none; }
+    .os-icon-area img { width: 72px; height: 72px; margin-bottom: 10px; object-fit: contain; }
+    .os-icon-area div { font-weight: 700; color: #333; font-size: 16px; }
+    .btn-sop-custom { background-color: #e7f3ff !important; color: #0056b3 !important; border: 1px solid #cce5ff !important; transition: all 0.2s ease-in-out; border-radius: 8px; font-size: 14px !important; font-weight: 600 !important; padding: 8px 0 !important; }
+    .btn-sop-custom:hover { background-color: #5198e5 !important; color: white !important; border-color: #5198e5 !important; box-shadow: 0 4px 8px rgba(0,123,255,0.2); }
   </style>
 </head>
 <body>
+
+
+
+
+
+
+
 
 <div id="sidebar">
     <div class="sidebar-header" onclick="goHome()">TSR Test Guide</div>
@@ -31,60 +84,522 @@
     <div class="nav-item" onclick="handleNavClick(this, 'CPU')"><i class="fas fa-microchip"></i>CPU</div>
     <div class="nav-item" onclick="handleNavClick(this, 'DIMM')"><i class="fas fa-memory"></i>DIMM</div>
     <div class="nav-item" onclick="handleNavClick(this, 'HDD')"><i class="fas fa-hdd"></i>HDD</div>
+    <div class="nav-item" onclick="handleNavClick(this, 'Preferred')"><i class="fas fa-star"></i>Preferred</div>
+    <div class="nav-item" onclick="handleNavClick(this, 'HW_FC')"><i class="fa-solid fa-network-wired"></i>HW_FC</div>
+    <div class="nav-item" onclick="handleNavClick(this, 'HW_LAN')"><i class="fa-solid fa-circle-nodes"></i>HW_LAN</div>
+    <div class="nav-item" onclick="handleNavClick(this, 'HW_SAS')"><i class="fa-solid fa-hard-drive"></i>HW_SAS</div>
+    <div class="nav-item" onclick="handleNavClick(this, 'HW_SAS RAID')"><i class="fa-solid fa-hard-drive"></i>HW_SAS RAID</div>
     <div class="nav-group">Function</div>
+    <div class="nav-item" onclick="handleNavClick(this, 'iPerf')"><i class="fas fa-link"></i>iPerf</div>
+    <div class="nav-item" onclick="handleNavClick(this, 'FIO')"><i class="fas fa-right-left"></i>FIO</div>
+    <div class="nav-item" onclick="handleNavClick(this, 'DP TCP')"><i class="fas fa-bolt"></i>DP TCP</div>
+    <div class="nav-item" onclick="handleNavClick(this, 'Xinping')"><i class="fas fa-network-wired"></i>Xinping</div>
+    <div class="nav-item" onclick="handleNavClick(this, 'FC setup')"><i class="fa-solid fa-gear"></i>FC setup</div>
+    <div class="nav-item" onclick="handleNavClick(this, 'SR IOV setup')"><i class="fa-solid fa-gear"></i>SR IOV setup</div>
+    <div class="nav-item" onclick="handleNavClick(this, 'DX200 setup')"><i class="fa-solid fa-gear"></i>DX200 setup</div>
     <div class="nav-item" onclick="handleNavClick(this, 'AC BOX')"><i class="fa-solid fa-gear"></i>AC BOX</div>
+    <div class="nav-item" onclick="handleNavClick(this, 'HotSpare')"><i class="fa-solid fa-gear"></i>HotSpare</div>
 </div>
+
+
+
+
+
+
+
 
 <div id="main-wrapper">
   <div id="main-content">
-    <div id="home-view"><h2>Welcome</h2></div>
+    <div id="home-view">
+      <h2 class="fw-bold">Welcome to Dashboard</h2>
+      <p class="text-muted">Select a category from the left menu to start.</p>
+    </div>
     <div id="data-view" style="display:none;">
-        <h4 id="current-category" class="fw-bold mb-4"></h4>
-        <div id="table-output"></div>
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 id="current-category" class="fw-bold m-0">Category</h4>
+        <div id="accordion-controls">
+          <button class="btn btn-sm btn-outline-secondary me-2" onclick="toggleAllAccordions(true)"><i class="fas fa-expand-alt me-1"></i> 全部展開</button>
+          <button class="btn btn-sm btn-outline-secondary" onclick="toggleAllAccordions(false)"><i class="fas fa-compress-alt me-1"></i> 全部收合</button>
+        </div>
+      </div>
+      <div id="table-output"></div>
     </div>
   </div>
 </div>
 
-<script>
-  // 你的 API 網址 (從 GAS 部署來的)
-  const API_URL = "https://script.google.com/macros/s/AKfycbzMlbLonfEGcrpJcB6EflgVDAvIGhBrnGJDarcQbtgFLa3-3901GWPObToPkec605WCCQ/exec";
-  let ALL_DATA = null;
 
-  // 1. 初始化讀取資料 (改用 fetch)
-  fetch(API_URL)
-    .then(res => res.json())
-    .then(data => { ALL_DATA = data; });
+
+
+
+
+
+
+<script>
+  const CATEGORY_OS_MAPPING = {
+    'HW_FC': ['WS', 'RHEL', 'SUSE', 'VM'],
+    'HW_LAN': ['WS', 'RHEL', 'SUSE', 'VM'],
+    'HW_SAS': ['WS', 'RHEL', 'SUSE', 'VM'],
+    'HW_SAS RAID': ['WS', 'RHEL', 'SUSE', 'VM'],
+  };
+
+
+
+
+
+
+
+
+  const OS_CONFIG = {
+    'WS': { name: 'Windows', icon: 'https://img.icons8.com/color/96/windows-10.png' },
+    'RHEL': { name: 'RHEL', icon: 'https://img.icons8.com/color/96/red-hat.png' },
+    'SUSE': { name: 'SUSE', icon: 'https://img.icons8.com/color/96/suse.png' },
+    'VM': { name: 'VMware', icon: 'https://img.icons8.com/color/96/vmware.png' }
+  };
+
+
+
+
+
+
+
+
+  const subMenuData = {
+    "HW_SAS RAID": {
+      "Windows": ["SR_Broadcom_WS", "SR_SmartRaidCard_WS", "SR_Broadcom外接JX_WS", "SR_2100 2200_WS"],
+      "RHEL": ["SR_Broadcom_RHEL", "SR_SmartRaidCard_RHEL", "SR_Broadcom外接JX_RHEL", "SR_2100 2200_RHEL"],
+      "SUSE": ["SR_Broadcom_SUSE", "SR_SmartRaidCard_SUSE", "SR_Broadcom外接JX_SUSE", "SR_2100 2200_SUSE"],
+      "VMware": ["SAS_RAID_VM"]
+    },
+    "HW_LAN": { "Windows": ["LAN_WS"], "RHEL": ["LAN_RHEL"], "SUSE": ["LAN_SUSE"], "VMware": ["LAN_VM"] },
+    "HW_FC": { "Windows": ["FC_WS"], "RHEL": ["FC_RHEL"], "SUSE": ["FC_SUSE"], "VMware": ["FC_VM"] },
+    "HW_SAS": {
+      "Windows": ["SAS_Broadcom_WS", "SAS_Broadcom外接JX_WS", "SAS_2100 2200_WS"],
+      "RHEL": ["SAS_Broadcom_RHEL", "SAS_Broadcom外接JX_RHEL", "SAS_2100 2200_RHEL"],
+      "SUSE": ["SAS_Broadcom_SUSE", "SAS_Broadcom外接JX_SUSE", "SAS_2100 2200_SUSE"],
+      "VMware": ["SAS_VM"]
+    }
+  };
+
+
+
+
+
+
+
 
   function handleNavClick(element, category) {
     document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
     element.classList.add('active');
-    
+    loadData(category);
+  }
+
+
+
+
+
+
+
+
+  function goHome() {
+    document.getElementById('home-view').style.display = 'block';
+    document.getElementById('data-view').style.display = 'none';
+    document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+  }
+
+
+
+
+
+
+
+
+  function loadData(category) {
     document.getElementById('home-view').style.display = 'none';
     document.getElementById('data-view').style.display = 'block';
-    document.getElementById('current-category').innerText = category;
-    
-    // 如果是 Function 類別，走 PDF 模式，否則走表格模式
-    const functionList = ['AC BOX']; 
-    if (functionList.includes(category)) {
-        renderPdfList(category);
-    } else {
-        renderSopCards(ALL_DATA[category]);
+    const container = document.getElementById('table-output');
+    const title = document.getElementById('current-category');
+    const osList = CATEGORY_OS_MAPPING[category];
+
+
+
+
+
+
+
+
+    // 定義妳所有的功能項目 (這就是妳側邊欄 FUNCTION 下面的所有名稱)
+    const functionList = ['iPerf', 'FIO', 'DP TCP', 'Xinping', 'FC setup', 'SR IOV setup', 'DX200 setup', 'AC BOX', 'HotSpare'];
+
+
+
+
+
+
+
+
+    if (osList) {
+      // --- 這是原本的 OS 邏輯，完全沒動 ---
+      title.innerText = category + ' - Select OS';
+      let osHtml = '<div class="os-select-container">';
+      osList.forEach(osId => {
+        const config = OS_CONFIG[osId];
+        osHtml += `<div class="os-column"><div class="os-icon-area"><img src="${config.icon}"><div>${config.name}</div></div><div id="sub-buttons-${config.name}" class="w-100" style="display: flex; flex-direction: column; gap: 8px;"></div></div>`;
+      });
+      container.innerHTML = osHtml + '</div>';
+      renderSubButtons(category);
+    }
+    // 🔴 [新增邏輯]：只要是清單內的項目，一律啟動 PDF 模式
+    else if (functionList.includes(category)) {
+      title.innerText = category + ' SOP';
+      container.innerHTML = '<div class="text-center p-5"><div class="spinner-border text-primary"></div></div>';
+     
+      google.script.run
+        .withSuccessHandler(data => renderSopCards(data, category)) // 這裡改成 category
+        .getSheetData('FUNCTION');
+    }
+    else {
+      // --- 這是原本的 TEST PLAN 邏輯，完全沒動 ---
+      title.innerText = category + ' SOP';
+      loadSopData(category);
     }
   }
 
-  // 渲染卡片邏輯 (請確保你的 processMergedData 函式還在下方)
-  function renderSopCards(values) {
-      const container = document.getElementById('table-output');
-      if (!values) { container.innerHTML = "資料載入中..."; return; }
-      // ... 原本的 renderSopCards 內容 ...
+
+
+
+
+
+
+
+  function renderSubButtons(category) {
+    const osTypes = ["Windows", "RHEL", "SUSE", "VMware"];
+    const categoryData = subMenuData[category];
+    osTypes.forEach(os => {
+      const container = document.getElementById(`sub-buttons-${os}`);
+      if (container && categoryData && categoryData[os]) {
+        categoryData[os].forEach(btnText => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "btn btn-sop-custom btn-sm w-100";
+          btn.innerText = btnText;
+          btn.onclick = function() { loadSopData(btnText); };
+          container.appendChild(btn);
+        });
+      }
+    });
   }
 
-  // PDF 顯示邏輯 (直接連到你的 GitHub PDF file 目錄)
-  function showPdfInNewLayer(pdfName) {
-      const container = document.getElementById('table-output');
-      container.innerHTML = `
-        <iframe src="PDF file/${pdfName}.pdf" style="width:100%; height:80vh; border:none;"></iframe>
-      `;
+
+
+
+
+
+
+
+  function loadSopData(sheetName) {
+    document.getElementById('current-category').innerText = sheetName + " Test SOP";
+    document.getElementById('table-output').innerHTML = '<p class="p-5 text-center">Fetching SOP data...</p>';
+    google.script.run.withSuccessHandler(renderSopCards).getSheetData(sheetName);
+  }
+
+
+
+
+
+
+
+
+  function formatGo2test(text) {
+  if (!text) return "";
+ 
+  // 我們不再使用 split(' ')，改用全域正規表達式直接掃描，這樣就不怕空格問題了
+  // 規則：找到 "參數名稱="，並且後面跟著一段非空白的文字
+  // 並且排除掉那些不想變紅的參數名稱
+ 
+  return text.toString().replace(/--(testtime|rscid|load)=([^\s]+)/g, function(match, key, value) {
+    // 檢查 value 是否為 IP
+    const isIP = /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/.test(value);
+   
+    if (isIP) {
+      return match; // IP 保持原樣
+    }
+   
+    // 符合規則且非 IP，就將 "=" 後面的值變紅
+    return `--${key}=<span style="color: red;">${value}</span>`;
+  });
+}
+  function processMergedData(values) {
+    let structuredData = [];
+    let mainItemMap = {};
+
+
+
+
+
+
+
+
+    for (let i = 1; i < values.length; i++) {
+      const row = values[i];
+     
+      let hasAnyContent = row.some(cell => cell && cell.toString().trim() !== "");
+      if (!hasAnyContent) continue;
+
+
+
+
+
+
+
+
+      const itemId = row[0] ? row[0].toString().trim() : "";
+      const procedureText = row[1] ? row[1].toString().trim() : "";
+     
+      const belongsToMainId = row[8] ? row[8].toString().trim() : "";
+
+
+
+
+
+
+
+
+      if (belongsToMainId !== "") {
+        let targetMain = mainItemMap[belongsToMainId];
+        if (targetMain) {
+          targetMain.subSteps.push({
+            subId: itemId,
+            procedure: procedureText,
+            brief: row[2] || "",
+            steps: row[3] || "",
+            criteria: row[4] || "",
+            log: row[5] || "",
+            reference: row[6] || "",
+            go2test: row[7] || ""
+          });
+        }
+      } else {
+        let newMainItem = {
+          id: itemId,
+          procedure: procedureText,
+          subSteps: []
+        };
+       
+        newMainItem.subSteps.push({
+          subId: itemId,
+          procedure: procedureText,
+          brief: row[2] || "",
+          steps: row[3] || "",
+          criteria: row[4] || "",
+          log: row[5] || "",
+          reference: row[6] || "",
+          go2test: row[7] || ""
+        });
+       
+        structuredData.push(newMainItem);
+       
+        if (itemId !== "") {
+          mainItemMap[itemId] = newMainItem;
+        }
+      }
+    }
+    return structuredData;
+  }
+
+
+
+
+function renderSopCards(values, category) {
+    const container = document.getElementById('table-output');
+    container.innerHTML = "";
+    const functionList = ['iPerf', 'FIO', 'DP TCP', 'Xinping', 'FC setup', 'SR IOV setup', 'DX200 setup', 'AC BOX', 'HotSpare'];
+   if (functionList.includes(category)) {
+        const categoryRegex = new RegExp(category + "_", "i");
+       
+        // 1. 先篩選出資料，這樣才有 targetRows
+        const targetRows = values.slice(1).filter(row =>
+            row[0] && row[0].toString().toLowerCase().includes(category.toLowerCase())
+        );
+
+
+        if (targetRows.length === 0) {
+            container.innerHTML = `<div class="alert alert-warning">無資料</div>`;
+            return;
+        }
+
+
+        // 2. 確定有 targetRows 後，再定義 isMulti
+        const isMulti = (targetRows.length > 1);
+
+
+        if (!isMulti) {
+            // 單筆模式
+            showPdfInNewLayer(targetRows[0][1], targetRows[0][0].replace(categoryRegex, '').trim(), category, false);
+        } else {
+            // 多筆清單模式
+            container.innerHTML = `
+            <div class="p-3">
+                <div class="row row-cols-1 g-2" style="max-width:200px;">
+                    ${targetRows.map(row => `
+                        <div class="col">
+                            <button class="btn btn-sop-custom btn-sm w-100 text-"
+                                    onclick="showPdfInNewLayer('${row[1]}', '${row[0].replace(categoryRegex, '').trim()}', '${category}', true)"
+                                    style="padding: 10px 25px;">
+                                ${row[0].replace(categoryRegex, '').trim()}
+                            </button>
+                        </div>`).join('')}
+                </div>
+            </div>`;
+        }
+        return;
+    }
+
+
+
+
+    // --- 2. Test Plan 手風琴模式 (這裡是 if 之外的邏輯，不會被 Function 卡住) ---
+    if (!values || values.length <= 1) {
+        container.innerHTML = '<div class="alert alert-info">無資料內容。</div>';
+        return;
+    }
+
+
+
+
+    const mainItems = processMergedData(values);
+    let html = '<div class="accordion" id="accordionExample">';
+    mainItems.forEach((item, index) => {
+        const titleText = (item.id + " - " + item.procedure).replace("-", ".");
+        html += `
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${index}">
+                    ${titleText}
+                </button>
+            </h2>
+            <div id="collapse${index}" class="accordion-collapse collapse">
+                <div class="accordion-body">
+                    ${item.subSteps.map(sub => {
+    // 判斷 sub.procedure 是否與外層 item.procedure 不同
+    // 如果不同，才產生標題區塊
+    const shouldShowSubTitle = (sub.procedure.trim() !== item.procedure.trim());
+   
+    return `
+        <div class="sub-step-card mb-3">
+            ${shouldShowSubTitle ? `<div class="sub-step-title mb-2 fw-bold">${sub.subId.replace("-", ".")} ${sub.procedure}</div>` : ''}
+           
+            <div class="row g-2">
+                ${renderCol('Test Description', sub.brief, 4)}
+                ${renderCol('Test Steps', sub.steps, 3)}
+                ${renderCol('Test Criteria', sub.criteria, 3)}
+                ${renderCol('Logs', sub.log, 2)}
+                <div class="col-md-12">
+                    <div class="row g-2">
+                        ${renderCol('Go2Test', formatGo2test(sub.go2test), 6)}
+                        ${renderCol('Reference', sub.reference, 6)}
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+}).join('')}
+                </div>
+            </div>
+        </div>`;
+    });
+    container.innerHTML = html + '</div>';
+}
+
+
+
+
+// 這是確保可以點擊的核心函數
+function showPdf(url, btnElement) {
+    if (!url) return;
+   
+    // 設定 PDF 預覽路徑
+    const viewer = document.getElementById('pdf-viewer');
+    const container = document.getElementById('preview-container');
+   
+    // 如果是 Google Drive 連結，把 view 改成 preview
+    viewer.src = url.replace('/view', '/preview');
+   
+    // 顯示區塊
+    container.style.display = 'block';
+   
+    // 按鈕高亮效果 (先把所有按鈕變回預設，再把現在按的變藍色)
+    document.querySelectorAll('.btn').forEach(el => {
+        el.classList.remove('btn-primary', 'text-white');
+        el.classList.add('btn-outline-primary');
+    });
+   
+    if (btnElement) {
+        btnElement.classList.remove('btn-outline-primary');
+        btnElement.classList.add('btn-primary', 'text-white');
+    }
+   
+    // 自動捲動到預覽視窗
+    container.scrollIntoView({ behavior: 'smooth' });
+}
+// 修改 showPdfInNewLayer，增加 showBackBtn 參數
+function showPdfInNewLayer(url, title, parentCategory, showBackBtn = true) {
+    const container = document.getElementById('table-output');
+
+
+    // 如果 showBackBtn 為 false，我們就讓這一整行消失，標題也會自動置中
+    const headerHtml = showBackBtn ? `
+        <div class="d-flex align-items-center mb-3">
+            <button class="btn btn-secondary me-3" onclick="loadData('${parentCategory}')">
+                <i class="fas fa-arrow-left"></i> 返回上一層
+            </button>
+            <h4 class="m-0">${title}</h4>
+        </div>` : `
+        <div class="mb-3 text-center">
+            <h4 class="m-0">${title}</h4>
+        </div>`;
+
+
+    container.innerHTML = `
+    <div class="p-3">
+        ${headerHtml}
+        <div id="preview-container" style="height: 75vh;">
+            <iframe id="pdf-viewer" src="${url.replace('/view', '/preview')}"
+                    style="width: 100%; height: 100%; border:2px solid #dee2e6; border-radius: 8px;"></iframe>
+        </div>
+    </div>`;
+}
+  function renderCol(title, content, width) {
+    const isEmpty = (!content || content.toString().trim() === "");
+   
+    if (isEmpty) return "";
+
+
+    return `
+        <div class="col-md-${width || 4}">
+            <div class="p-2 h-100" style="background:#f8f9fa; border-radius:4px; border: 1px solid #eaecf0;">
+                <span class="inner-label" style="color:#333; font-weight: bold;">${title}:</span>
+                <div class="sop-content-text" style="margin-top: 4px;">${linkify(content)}</div>
+            </div>
+        </div>`;
+}
+
+
+
+
+  function linkify(text) {
+  if (!text) return "";
+  // 保持原本的網址匹配規則，但把 style 設定簡化
+  // 這樣能減少與其他標籤衝突的機會
+  const urlPattern = /(https?:\/\/[^\s<]+)/g;
+  return text.toString().replace(urlPattern, '<a href="$1" target="_blank" style="color: #3498db; text-decoration: underline;">link</a>');
+}
+  function toggleAllAccordions(isOpen) {
+    const buttons = document.querySelectorAll('.accordion-button');
+    const collapses = document.querySelectorAll('.accordion-collapse');
+    buttons.forEach((btn, i) => {
+      if (isOpen) { btn.classList.remove('collapsed'); collapses[i].classList.add('show'); }
+      else { btn.classList.add('collapsed'); collapses[i].classList.remove('show'); }
+    });
   }
 </script>
 </body>
